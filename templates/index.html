@@ -32,6 +32,7 @@
     <hr>
     <h2>ChatGPT Response:</h2>
     <button id="playAudioBtn" onclick="playAudio()" disabled>Play Audio</button>
+    <button id="pauseAudioBtn" onclick="pauseAudio()" disabled>Pause Audio</button>
     <p id="chatGptResponse"></p>
     <h2>Conversation History:</h2>
     <div id="conversationHistory"></div>
@@ -63,6 +64,8 @@
                 // Update the code here
                 currentUtterance = new SpeechSynthesisUtterance(response);
                 $("#playAudioBtn").prop("disabled", false);
+                $("#pauseAudioBtn").prop("disabled", true);  
+                $("#pauseAudioBtn").text("Pause Audio");     
 
                 $("#submitBtn").prop("disabled", false);
                 $("#spinner").css("display", "none");
@@ -75,8 +78,23 @@
     function playAudio() {
         if (currentUtterance !== null) {
             window.speechSynthesis.speak(currentUtterance);
+            $("#pauseAudioBtn").prop("disabled", false);
         }
     }
+
+    function pauseAudio() {
+        const synth = window.speechSynthesis;
+        if (synth.speaking) {
+            if (synth.paused) {
+                synth.resume();
+                $("#pauseAudioBtn").text("Pause Audio");
+            } else {
+                synth.pause();
+                $("#pauseAudioBtn").text("Resume Audio");
+            }
+        }
+    }
+    
     function clearChatHistory() {
             $("#conversationHistory").empty();
             conversationHistory.length = 0;
