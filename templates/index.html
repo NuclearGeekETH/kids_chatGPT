@@ -76,8 +76,12 @@
     }
 
     function playAudio() {
+        const synth = window.speechSynthesis;
         if (currentUtterance !== null) {
-            window.speechSynthesis.speak(currentUtterance);
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            synth.speak(currentUtterance);
             $("#pauseAudioBtn").prop("disabled", false);
         }
     }
