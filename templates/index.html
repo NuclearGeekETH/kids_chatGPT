@@ -1,0 +1,87 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NuclearGeek's ChatGPT for Kids</title>
+    <style>
+        .spinner {
+            display: none;
+            margin-left: 8px;
+            border: 2px solid var(--gray);
+            border-top-color: var(--lightGray);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>NuclearGeek's ChatGPT for Kids</h1>
+    <textarea id="userMessage" rows="5" placeholder="Your message..."></textarea>
+    <br>
+    <button id="submitBtn" onclick="submitMessage()">Submit<span id="spinner" class="spinner"></span></button>
+    <button onclick="clearChatHistory()">Clear chat history</button>
+    <hr>
+    <h2>ChatGPT Response:</h2>
+    <button id="playAudioBtn" onclick="playAudio()" disabled>Play Audio</button>
+    <p id="chatGptResponse"></p>
+    <h2>Conversation History:</h2>
+    <div id="conversationHistory"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var conversationHistory = [];
+
+        let currentUtterance = null;
+
+    function submitMessage() {
+        var userMessage = $("#userMessage").val().trim();
+        if (userMessage) {
+            conversationHistory.push({role: "user", content: userMessage});
+            $("#submitBtn").prop("disabled", true);
+            $("#spinner").css("display", "inline-block");
+        
+            $.post("/chat", {user_message: userMessage}, function(data) {
+                var response = data.response;
+                var historyItem = $("<p>").text("User: " + userMessage);
+                $("#conversationHistory").append(historyItem);
+
+                var gptResItem = $("<p>").text("GPT: " + response);
+                $("#conversationHistory").append(gptResItem);
+
+                $("#chatGptResponse").text(response);
+
+                conversationHistory.push({role: "assistant", content: response});
+
+                // Update the code here
+                currentUtterance = new SpeechSynthesisUtterance(response);
+                $("#playAudioBtn").prop("disabled", false);
+
+                $("#submitBtn").prop("disabled", false);
+                $("#spinner").css("display", "none");
+            });
+
+            $("#userMessage").val("");
+        }
+    }
+
+    function playAudio() {
+        if (currentUtterance !== null) {
+            window.speechSynthesis.speak(currentUtterance);
+        }
+    }
+    function clearChatHistory() {
+            $("#conversationHistory").empty();
+            conversationHistory.length = 0;
+    }
+
+    </script>
+</body>
+</html>
