@@ -50,7 +50,7 @@ You'll need Python 3.6 or newer installed on your computer.
 1. Make sure your virtual environment is active. If it isn't, activate it by running the command from Step 3 of "Setting up the environment".
 2. In the terminal, navigate to the project folder ("chatgpt-kids") and type the following command to start the Flask server:
    ```
-   python app.py
+   python run.py
    ```
    Replace `app.py` with the name of your Python file, if it's different.
 3. After running the command, you should see some output in the terminal, including a line that says something like:
